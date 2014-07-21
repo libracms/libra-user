@@ -19,7 +19,7 @@ use ZfcUser\Entity\User as BaseUser;
 class User extends BaseUser implements IdentityInterface
 {
     /**
-     * @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer", name="id")
+     * @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer")
      * @var int
      */
     protected $id;
@@ -55,7 +55,7 @@ class User extends BaseUser implements IdentityInterface
     protected $state;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Role", inversedBy="id")
+     * @ORM\ManyToMany(targetEntity="Role", inversedBy="users")
      * @var ArrayCollection
      */
     protected $roles;

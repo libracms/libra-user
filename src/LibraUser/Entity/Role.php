@@ -33,7 +33,7 @@ class Role
     protected $parentId;
 
     /**
-     * @ORM\ManyToMany(targetEntity="User", mappedBy="id")
+     * @ORM\ManyToMany(targetEntity="User", mappedBy="roles")
      * @var ArrayCollection
      */
     protected $users;
