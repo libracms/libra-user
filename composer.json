@@ -1,0 +1,29 @@
+{
+    "name":         "libra/libra-user",
+    "type":         "library",
+    "description":  "Add user managing and roles by Rbac to Libra CMS",
+    "keywords":     ["zf", "zf2", "zendframework", "libra", "rbac", "user"],
+    "homepage":     "http://www.ejoom.com/libra-cms/",
+    "licence":      "BSD-3-Clause",
+    "authors": [
+        {"name": "Vitalii Nagara", "email": "duke@ejoom.com", "role": "contributer"}
+    ],
+
+    "require": {
+        "php":                              ">=5.4",
+        "zf-commons/zfc-user":              "0.*",
+        "doctrine/doctrine-orm-module":     "~0.8",
+        "zf-commons/zfc-rbac":              "~2.3"
+    },
+
+    "autoload": {
+        "psr-0": {"LibraUser\\": "src/"},
+        "classmap": ["Module.php"]
+    },
+
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.3.x-dev"
+        }
+    }
+}
