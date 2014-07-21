@@ -2,7 +2,11 @@
 
 namespace LibraUser\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Rbac\Permission\PermissionInterface;
+use Rbac\Role\HierarchicalRoleInterface;
 
 /**
  * Description of Role
@@ -12,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\Table(name="role")
  */
-class Role
+class Role implements HierarchicalRoleInterface
 {
     /**
      * @ORM\Id @ORM\GeneratedValue @ORM\Column(type="integer")
@@ -21,22 +25,37 @@ class Role
     protected $id;
 
     /**
-     * @ORM\Column(length=15, unique=true)
+     * @ORM\Column(length=63, unique=true)
      * @var string
      */
     protected $name;
 
     /**
-     * @ORM\Column(type="integer", name="parent_id")
-     * @var string
+     * @ORM\ManyToMany(targetEntity="Role")
+     * @var HierarchicalRoleInterface[]|Collection
      */
-    protected $parentId;
+    protected $children;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Permission", indexBy="name", fetch="EAGER")
+     * @var PermissionInterface[]|Collection
+     */
+    protected $permissions;
 
     /**
      * @ORM\ManyToMany(targetEntity="User", mappedBy="roles")
      * @var ArrayCollection
      */
     protected $users;
+
+    /**
+     * Init the Doctrine collection
+     */
+    public function __construct()
+    {
+        $this->children    = new ArrayCollection();
+        $this->permissions = new ArrayCollection();
+    }
 
     public function getId()
     {
@@ -48,19 +67,50 @@ class Role
         return $this->name;
     }
 
+    /**
+     * Set the role name
+     *
+     * @param  string $name
+     * @return void
+     */
     public function setName($name)
     {
         $this->name = $name;
     }
 
-    public function getParentId()
+    /**
+     * {@inheritDoc}
+     */
+    public function getChildren()
     {
-        return $this->parentId;
+        return $this->children;
     }
 
-    public function setParentId($parentId)
+    /**
+     * {@inheritDoc}
+     */
+    public function hasChildren()
     {
-        $this->parentId = $parentId;
+        return !$this->children->isEmpty();
+    }
+
+    /**
+     * @return PermissionInterface[]|Collection
+     */
+    public function getPermissions()
+    {
+        return $this->permissions;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function hasPermission($permission)
+    {
+        // This can be a performance problem if your role has a lot of permissions. Please refer
+        // to the cookbook to an elegant way to solve this issue
+
+        return isset($this->permissions[(string) $permission]);
     }
 
     public function __toString()
